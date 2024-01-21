@@ -1,8 +1,6 @@
 import { visit } from 'unist-util-visit';
 export function rehypeAnimateLists(options) {
     return function (tree) {
-        if (!options?.animateLists)
-            return;
         visit(tree, 'element', (node, index, parent) => {
             if (node.tagName !== 'li')
                 return;
