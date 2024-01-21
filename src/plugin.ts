@@ -1,8 +1,10 @@
-//import { MarkedRenderer, marked } from 'marked';
 import type { MarkdownConfig } from 'reveal.js';
-//import type Reveal from 'reveal.js';
-import { RemarkProcessor } from './RemarkProcessor.js';
-import type { Processor } from 'unified';
+//import { MarkedRenderer, marked } from 'marked';
+import {
+  RemarkProcessor,
+  type RemarkRenderOptions,
+  type RemarkRenderer,
+} from './RemarkProcessor.js';
 
 const DEFAULT_SLIDE_SEPARATOR = '\r?\n---\r?\n',
   DEFAULT_VERTICAL_SEPARATOR = null,
@@ -14,8 +16,11 @@ const SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
 
 const remarkProcessor = new RemarkProcessor();
 
-function markdown(mdSource: string): string {
-  return remarkProcessor.render(mdSource);
+function markdown(
+  mdSource: string,
+  options?: Partial<RemarkRenderOptions>
+): string {
+  return remarkProcessor.render(mdSource, options);
 }
 
 // Plugin
@@ -137,7 +142,7 @@ export default function revealRemarkMarkdownPlugin() {
 
     // create notes content
     if (notesMatch.length === 2) {
-      const notesRendered = markdown(notesMatch[1].trim(), options);
+      const notesRendered = markdown(notesMatch[1].trim(), options as any);
       content = notesMatch[0] + `<aside class="notes">${notesRendered}</aside>`;
     }
 
@@ -485,7 +490,7 @@ export default function revealRemarkMarkdownPlugin() {
       let { renderer, ...markedOptions } = {
         ...(revealConfig.markdown as Omit<MarkdownConfig, 'renderer'> & {
           //renderer: MarkedRenderer;
-          renderer?: Processor;
+          renderer?: RemarkRenderer;
         }),
       };
 

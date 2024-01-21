@@ -10,19 +10,27 @@ import type {
   Tokenizer,
   RendererObject,
   TokenizerObject,
-  Renderer,
+  Renderer as MarkedRenderer,
 } from 'marked';
 
 import { rehypeCodeHighlight } from './rehypeCodeHighlight';
 import { rehypeAnimateLists } from './rehypeAnimateLists';
 
-// TODO: make options compatible with MarkedRenderOptions
-type RemarkRenderOptions = {
-  renderer: Processor<MdastRoot, MdastRoot, HastRoot, HastRoot, string>;
+export type RemarkRenderer = Processor<
+  MdastRoot,
+  MdastRoot,
+  HastRoot,
+  HastRoot,
+  string
+>;
 
+// TODO: make options compatible with MarkedRenderOptions
+export type RemarkRenderOptions = {
+  renderer: RemarkRenderer;
   // introduced in v4.1.1 https://github.com/hakimel/reveal.js/releases/tag/4.1.1
   animateLists: boolean;
 };
+
 export class RemarkProcessor {
   _options: Partial<RemarkRenderOptions>;
 
@@ -34,7 +42,7 @@ export class RemarkProcessor {
     this._options = options;
   }
 
-  processor(renderOptions: Partial<RemarkRenderOptions> = {}) {
+  processor(renderOptions?: Partial<RemarkRenderOptions>) {
     const options = {
       ...this._options,
       ...renderOptions,
@@ -67,7 +75,10 @@ export class RemarkProcessor {
     >;
   }
 
-  render(mdSource: string, renderOptions?: any): string {
+  render(
+    mdSource: string,
+    renderOptions?: Partial<RemarkRenderOptions>
+  ): string {
     const processor = this.processor(renderOptions);
     return processor.processSync(mdSource).value as string;
   }
@@ -146,7 +157,7 @@ type MarkedRenderOptions = {
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: Renderer | RendererObject | undefined;
+  renderer?: MarkedRenderer | RendererObject | undefined;
 
   /**
    * Sanitize the output. Ignore any HTML that has been input.
