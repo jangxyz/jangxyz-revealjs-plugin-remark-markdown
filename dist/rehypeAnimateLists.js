@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.rehypeAnimateLists = void 0;
-const unist_util_visit_1 = require("unist-util-visit");
-function rehypeAnimateLists(options) {
+import { visit } from 'unist-util-visit';
+export function rehypeAnimateLists(options) {
     return function (tree) {
         if (!options?.animateLists)
             return;
-        (0, unist_util_visit_1.visit)(tree, 'element', (node, index, parent) => {
+        visit(tree, 'element', (node, index, parent) => {
             if (node.tagName !== 'li')
                 return;
             node.properties.className = (node.properties.className ?? []);
@@ -17,4 +14,3 @@ function rehypeAnimateLists(options) {
         return tree;
     };
 }
-exports.rehypeAnimateLists = rehypeAnimateLists;

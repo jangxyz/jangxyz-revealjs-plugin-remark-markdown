@@ -1,15 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 //import type Reveal from 'reveal.js';
-const RemarkProcessor_js_1 = require("./RemarkProcessor.js");
+import { RemarkProcessor } from './RemarkProcessor.js';
 const DEFAULT_SLIDE_SEPARATOR = '\r?\n---\r?\n', DEFAULT_VERTICAL_SEPARATOR = null, DEFAULT_NOTES_SEPARATOR = '^s*notes?:', DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\.element\\s*?(.+?)$', DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\.slide:\\s*?(\\S.+?)$';
 const SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
-const remarkProcessor = new RemarkProcessor_js_1.RemarkProcessor();
+const remarkProcessor = new RemarkProcessor();
 function markdown(mdSource) {
     return remarkProcessor.render(mdSource);
 }
 // Plugin
-function revealRemarkMarkdownPlugin() {
+export default function revealRemarkMarkdownPlugin() {
     // The reveal.js instance this plugin is attached to
     let deck;
     /**
@@ -370,4 +368,3 @@ function revealRemarkMarkdownPlugin() {
         markdown: remarkProcessor,
     };
 }
-exports.default = revealRemarkMarkdownPlugin;

@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.rehypeCodeHighlight = void 0;
-const unist_util_visit_1 = require("unist-util-visit");
-const hast_util_from_html_1 = require("hast-util-from-html");
+import { SKIP, visit } from 'unist-util-visit';
+import { fromHtml } from 'hast-util-from-html';
 // following https://github.com/unifiedjs/unified#plugin
-function rehypeCodeHighlight() {
+export function rehypeCodeHighlight() {
     return function (tree) {
-        (0, unist_util_visit_1.visit)(tree, 'element', (node, index, parent) => {
+        visit(tree, 'element', (node, index, parent) => {
             if (!parent || index === undefined)
                 return;
             if (node.tagName === 'code') {
@@ -23,18 +20,17 @@ function rehypeCodeHighlight() {
                 if (!code)
                     return;
                 const code2 = renderCodeHighlight(code, langData);
-                const root2 = (0, hast_util_from_html_1.fromHtml)(code2, { fragment: true });
+                const root2 = fromHtml(code2, { fragment: true });
                 const node2 = root2.children[0].children[0];
                 if (parent) {
                     parent.children[index] = node2;
-                    return unist_util_visit_1.SKIP;
+                    return SKIP;
                 }
             }
         });
         return tree;
     };
 }
-exports.rehypeCodeHighlight = rehypeCodeHighlight;
 // code from reveal.js/plugin/markdown/plugin.js
 // https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/plugin.js
 const HTML_ESCAPE_MAP = {
