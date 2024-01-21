@@ -3,8 +3,6 @@ import type { Root } from 'hast';
 
 export function rehypeAnimateLists(options?: { animateLists: boolean }) {
   return function (tree: Root) {
-    if (!options?.animateLists) return;
-
     visit(tree, 'element', (node, index, parent) => {
       if (node.tagName !== 'li') return;
 
