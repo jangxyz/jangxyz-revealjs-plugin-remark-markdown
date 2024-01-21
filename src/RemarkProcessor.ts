@@ -1,16 +1,32 @@
-import { unified, type Processor, type Plugin as UnifiedPlugin } from 'unified';
+import { unified, type Processor } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import rehypeSanitize from 'rehype-sanitize';
-import { type MarkedRenderer, marked } from 'marked';
+import type { Root as MdastRoot } from 'mdast';
+import type { Root as HastRoot } from 'hast';
+import type {
+  Token,
+  Tokenizer,
+  RendererObject,
+  TokenizerObject,
+  Renderer as MarkedRenderer,
+} from 'marked';
+
 import { rehypeCodeHighlight } from './rehypeCodeHighlight';
 import { rehypeAnimateLists } from './rehypeAnimateLists';
 
-// TODO: make options compatible with MarkedRenderOptions
-type RemarkRenderOptions = {
-  renderer: Processor;
+export type RemarkRenderer = Processor<
+  MdastRoot,
+  MdastRoot,
+  HastRoot,
+  HastRoot,
+  string
+>;
 
+// TODO: make options compatible with MarkedRenderOptions
+export type RemarkRenderOptions = {
+  renderer: RemarkRenderer;
   // introduced in v4.1.1 https://github.com/hakimel/reveal.js/releases/tag/4.1.1
   animateLists: boolean;
 };
@@ -26,7 +42,7 @@ export class RemarkProcessor {
     this._options = options;
   }
 
-  processor(renderOptions: Partial<RemarkRenderOptions> = {}) {
+  processor(renderOptions?: Partial<RemarkRenderOptions>) {
     const options = {
       ...this._options,
       ...renderOptions,
@@ -36,12 +52,13 @@ export class RemarkProcessor {
       return options.renderer;
     }
 
-    let _processor = unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      //.use(rehypeRaw)
-      .use(rehypeSanitize)
-      .use(rehypeCodeHighlight);
+    let _processor: Processor<MdastRoot, MdastRoot, HastRoot, any, any> =
+      unified()
+        .use(remarkParse)
+        .use(remarkRehype)
+        //.use(rehypeRaw)
+        .use(rehypeSanitize)
+        .use(rehypeCodeHighlight);
 
     if (options.animateLists) {
       _processor = _processor.use(rehypeAnimateLists);
@@ -49,10 +66,19 @@ export class RemarkProcessor {
 
     _processor = _processor.use(rehypeStringify);
 
-    return _processor;
+    return _processor as Processor<
+      MdastRoot,
+      MdastRoot,
+      HastRoot,
+      HastRoot,
+      string
+    >;
   }
 
-  render(mdSource: string, renderOptions?: any): string {
+  render(
+    mdSource: string,
+    renderOptions?: Partial<RemarkRenderOptions>
+  ): string {
     const processor = this.processor(renderOptions);
     return processor.processSync(mdSource).value as string;
   }
