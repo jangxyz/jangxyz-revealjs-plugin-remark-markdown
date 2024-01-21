@@ -7,11 +7,11 @@ This plugin makes any Reveal.js project work with the remark plugin.
 Install from github repo directly:
 
 ```bash
-npm install --save github:jangxyz/jangxyz-revealjs-plugin-remark-markdown
+npm install --save github:jangxyz/jangxyz-revealjs-plugin-remark-markdown#0.3.0
 # pnpm
-#pnpm add github:jangxyz/jangxyz-revealjs-plugin-remark-markdown
+#pnpm add github:jangxyz/jangxyz-revealjs-plugin-remark-markdown#0.3.0
 # yarn
-#yarn add github:jangxyz/jangxyz-revealjs-plugin-remark-markdown
+#yarn add github:jangxyz/jangxyz-revealjs-plugin-remark-markdown#0.3.0
 ```
 
 ## Usage
@@ -43,7 +43,7 @@ const deck = new Reveal({
 });
 ```
 
-For any other markdown options, you should make your custom unified processor and pass it as a `renderer` option istead.
+For any other markdown options, you should make your custom unified processor and pass it as a `renderer` option instead.
 That means you cannot use other options such as `smartypants` that used to work for marked.
 
 ```javascript
