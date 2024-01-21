@@ -1,20 +1,28 @@
-import { unified, type Processor, type Plugin as UnifiedPlugin } from 'unified';
+import { unified, type Processor } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import rehypeSanitize from 'rehype-sanitize';
-import { type MarkedRenderer, marked } from 'marked';
+import type { Root as MdastRoot } from 'mdast';
+import type { Root as HastRoot } from 'hast';
+import type {
+  Token,
+  Tokenizer,
+  RendererObject,
+  TokenizerObject,
+  Renderer,
+} from 'marked';
+
 import { rehypeCodeHighlight } from './rehypeCodeHighlight';
 import { rehypeAnimateLists } from './rehypeAnimateLists';
 
 // TODO: make options compatible with MarkedRenderOptions
 type RemarkRenderOptions = {
-  renderer: Processor;
+  renderer: Processor<MdastRoot, MdastRoot, HastRoot, HastRoot, string>;
 
   // introduced in v4.1.1 https://github.com/hakimel/reveal.js/releases/tag/4.1.1
   animateLists: boolean;
 };
-
 export class RemarkProcessor {
   _options: Partial<RemarkRenderOptions>;
 
@@ -36,12 +44,13 @@ export class RemarkProcessor {
       return options.renderer;
     }
 
-    let _processor = unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      //.use(rehypeRaw)
-      .use(rehypeSanitize)
-      .use(rehypeCodeHighlight);
+    let _processor: Processor<MdastRoot, MdastRoot, HastRoot, any, any> =
+      unified()
+        .use(remarkParse)
+        .use(remarkRehype)
+        //.use(rehypeRaw)
+        .use(rehypeSanitize)
+        .use(rehypeCodeHighlight);
 
     if (options.animateLists) {
       _processor = _processor.use(rehypeAnimateLists);
@@ -49,7 +58,13 @@ export class RemarkProcessor {
 
     _processor = _processor.use(rehypeStringify);
 
-    return _processor;
+    return _processor as Processor<
+      MdastRoot,
+      MdastRoot,
+      HastRoot,
+      HastRoot,
+      string
+    >;
   }
 
   render(mdSource: string, renderOptions?: any): string {
@@ -131,7 +146,7 @@ type MarkedRenderOptions = {
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: MarkedRenderer | RendererObject | undefined;
+  renderer?: Renderer | RendererObject | undefined;
 
   /**
    * Sanitize the output. Ignore any HTML that has been input.
