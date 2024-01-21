@@ -1,10 +1,10 @@
-//import type Reveal from 'reveal.js';
-import { RemarkProcessor } from './RemarkProcessor.js';
+//import { MarkedRenderer, marked } from 'marked';
+import { RemarkProcessor, } from './RemarkProcessor.js';
 const DEFAULT_SLIDE_SEPARATOR = '\r?\n---\r?\n', DEFAULT_VERTICAL_SEPARATOR = null, DEFAULT_NOTES_SEPARATOR = '^s*notes?:', DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\.element\\s*?(.+?)$', DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\.slide:\\s*?(\\S.+?)$';
 const SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
 const remarkProcessor = new RemarkProcessor();
-function markdown(mdSource) {
-    return remarkProcessor.render(mdSource);
+function markdown(mdSource, options) {
+    return remarkProcessor.render(mdSource, options);
 }
 // Plugin
 export default function revealRemarkMarkdownPlugin() {

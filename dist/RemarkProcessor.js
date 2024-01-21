@@ -13,7 +13,7 @@ export class RemarkProcessor {
     setOptions(options) {
         this._options = options;
     }
-    processor(renderOptions = {}) {
+    processor(renderOptions) {
         const options = {
             ...this._options,
             ...renderOptions,

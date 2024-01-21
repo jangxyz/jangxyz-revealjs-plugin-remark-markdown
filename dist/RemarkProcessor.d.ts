@@ -1,13 +1,15 @@
 import { type Processor } from 'unified';
-type RemarkRenderOptions = {
-    renderer: Processor;
+import type { Root as MdastRoot } from 'mdast';
+import type { Root as HastRoot } from 'hast';
+export type RemarkRenderer = Processor<MdastRoot, MdastRoot, HastRoot, HastRoot, string>;
+export type RemarkRenderOptions = {
+    renderer: RemarkRenderer;
     animateLists: boolean;
 };
 export declare class RemarkProcessor {
     _options: Partial<RemarkRenderOptions>;
     constructor(options?: Partial<RemarkRenderOptions>);
     setOptions(options: Partial<RemarkRenderOptions>): void;
-    processor(renderOptions?: Partial<RemarkRenderOptions>): Processor<undefined, undefined, undefined, undefined, undefined> | Processor<import("mdast").Root, import("mdast").Root, import("hast").Root, undefined, undefined>;
-    render(mdSource: string, renderOptions?: any): string;
+    processor(renderOptions?: Partial<RemarkRenderOptions>): RemarkRenderer;
+    render(mdSource: string, renderOptions?: Partial<RemarkRenderOptions>): string;
 }
-export {};
